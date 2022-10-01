@@ -26,7 +26,7 @@ import 'controller/controller.dart';
 
 
 void main() {
-  final controller = Get.put(Controller());
+  final controller = Get.put(Controller_X());
   runApp(const MyApp());
 }
 

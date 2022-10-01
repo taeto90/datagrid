@@ -38,7 +38,7 @@ class OrderInfoDataSource extends DataGridSource {
         cells: row.getCells().map<Widget>((dataGridCell) {
           if (dataGridCell.columnName == 'id_ingrid') {                         //이렇게 복잡하게안해도됨
             return Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
               alignment: Alignment.centerRight,
               child: Text(
                 dataGridCell.value.toString(),
@@ -47,7 +47,7 @@ class OrderInfoDataSource extends DataGridSource {
             );
           } else if (dataGridCell.columnName == 'name_ingrid') {
             return Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 5.0),
                 alignment: Alignment.centerLeft,
                 child: Text(
                   dataGridCell.value.toString(),
@@ -55,7 +55,7 @@ class OrderInfoDataSource extends DataGridSource {
                 ));
           } else if (dataGridCell.columnName == 'designation_ingrid') {
             return Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 5.0),
                 alignment: Alignment.centerRight,
                 child: Text(
                  // DateFormat.yMd().format(dataGridCell.value).toString(),
@@ -64,7 +64,7 @@ class OrderInfoDataSource extends DataGridSource {
                 ));
           } else {
             return Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 5.0),
                 alignment: Alignment.center,
                 child: Text(
                   NumberFormat.currency(locale: "ko_KR")  //, symbol: '\@'
@@ -79,21 +79,21 @@ class OrderInfoDataSource extends DataGridSource {
         }).toList());
   }
 
-  // @override
-  // Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-  //   int startIndex = newPageIndex * rowsPerPage;
-  //   int endIndex = startIndex + rowsPerPage;
-  //   if (startIndex < employeesInClass.length && endIndex <= employeesInClass.length) {
-  //     _paginatedEmployees = employeesInClass.getRange(startIndex, endIndex).toList(growable: false);
-  //     buildPaginatedDataGridRows();
-  //     notifyListeners();
-  //   } else {
-  //     _paginatedEmployees = employeesInClass.getRange(startIndex, employeesInClass.length).toList();
-  //     buildPaginatedDataGridRows();
-  //     notifyListeners();
-  //   }
-  //   return true;
-  // }
+  @override
+  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
+    int startIndex = newPageIndex * rowsPerPage;
+    int endIndex = startIndex + rowsPerPage;
+    if (startIndex < employeesInClass.length && endIndex <= employeesInClass.length) {
+      _paginatedEmployees = employeesInClass.getRange(startIndex, endIndex).toList(growable: false);
+      buildPaginatedDataGridRows();
+      notifyListeners();
+    } else {
+      _paginatedEmployees = employeesInClass.getRange(startIndex, employeesInClass.length).toList();
+      buildPaginatedDataGridRows();
+      notifyListeners();
+    }
+    return true;
+  }
   // @override              //async방식으로 만듬 위에꺼와 비교하여 그냥 대기시간문 추가됨
   // Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
   //   int startIndex = newPageIndex * rowsPerPage;

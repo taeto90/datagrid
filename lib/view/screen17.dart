@@ -62,14 +62,14 @@ class _Mainscreen17State extends State<Mainscreen17> {
                           borderSide: BorderSide(width: 3,color: Colors.blue)
                       )
                   ),
-                  value: _rowsPerPage,
+                  value: 7,
                   items: items.map((item) => DropdownMenuItem<int>(
                       value: item,
                       child: Text('$item',style: TextStyle(fontSize: 13),)
                   ),).toList(),
-                  onChanged: (item) => setState((){
-                    _rowsPerPage=item!;
-                    //_employeeDataSource.updateDataGriDataSource();
+                  onChanged: (item) => setState(() {
+                    _employeeDataSource.rowsPerPage = item!;
+                    _employeeDataSource.updateDataGriDataSource();
                   }),
                 ),
               ),
@@ -78,7 +78,49 @@ class _Mainscreen17State extends State<Mainscreen17> {
           SizedBox(
               height: constraint.maxHeight - _dataPagerHeight - 150,
               width: constraint.maxWidth,
-              child: _buildStack(constraint) //데이터가 위치할공간
+              child: SfDataGrid(
+                  headerRowHeight: 25,
+                  source: _employeeDataSource,
+                  columnWidthMode: ColumnWidthMode.fill,
+                  //rowsPerPage: _rowsPerPage,      //이걸해버리면 source에서 handlePageChange을 정의할필요가없어짐 이걸 왜 맨뒤에 둬서.... 개뻘짓됨....
+                  columns: <GridColumn>[
+                    GridColumn(
+                        columnName: 'id_incolumn',
+                        label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Id',
+                              overflow: TextOverflow.ellipsis,
+                            ))),
+                    GridColumn(
+                        columnName: 'name_incolumn',
+                        label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Name',
+                              overflow: TextOverflow.ellipsis,
+                            ))),
+                    GridColumn(
+                        columnName: 'designation_incloumn',
+                        label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Designation',
+                              overflow: TextOverflow.ellipsis,
+                            ))),
+                    GridColumn(
+                        columnName: 'salary_incolumn',
+                        label: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Salary',
+                              overflow: TextOverflow.ellipsis,
+                            )))
+                  ]) //데이터가 위치할공간
               ),
 
 
@@ -134,7 +176,7 @@ class _Mainscreen17State extends State<Mainscreen17> {
           Container(
               //아래 페이지표시하는곳이 위치할공간
               height: _dataPagerHeight,
-              width: 600,
+              //width: 600,
               //color: Colors.redAccent,
               child: SfDataPagerTheme(
                 data: SfDataPagerThemeData(
@@ -149,6 +191,7 @@ class _Mainscreen17State extends State<Mainscreen17> {
                 ),
                 child: SfDataPager(
                     delegate: _employeeDataSource,
+                    //pageCount: _employees.length % _rowsPerPage==0 ? (_employees.length / _rowsPerPage):(_employees.length / _rowsPerPage)+1,
                     pageCount: (_employees.length / _rowsPerPage).ceil().toDouble(),
                     //아무것도없는페이지로 가버리면 에러뜸
 
@@ -193,24 +236,24 @@ class _Mainscreen17State extends State<Mainscreen17> {
                     },
                     itemPadding: EdgeInsets.all(10.0), //아이템들사이의 거리
 
-                    // availableRowsPerPage: [10, 20, 30],
-                    // onRowsPerPageChanged: (int? rowsPerPage) {
-                    //   setState(() {
-                    //     _employeeDataSource.rowsPerPage = rowsPerPage!;
-                    //     _employeeDataSource.updateDataGriDataSource();
-                    //   });
-                    // },
+                    availableRowsPerPage: [5, 10, 20],
+                    onRowsPerPageChanged: (int? rowsPerPage) {
+                      setState(() {
+                        _employeeDataSource.rowsPerPage = rowsPerPage!;
+                        _employeeDataSource.updateDataGriDataSource();
+                      });
+                    },
 
                     onPageNavigationStart: (int pageIndex) {
                       setState(() {
                         showLoadingIndicator = true;
-                        print('$pageIndex');
                       });
                     },
                     onPageNavigationEnd: (int pageIndex) {
                       setState(() {
                         showLoadingIndicator = false;
                         setState(() {
+                          //int last = _employees.length % _rowsPerPage==0 ? (_employees.length / _rowsPerPage).toInt():(_employees.length / _rowsPerPage).ceil();
                           int last = (_employees.length / _rowsPerPage).ceil();
                           if(pageIndex==0){
                             index=[1,2,3];
@@ -224,7 +267,6 @@ class _Mainscreen17State extends State<Mainscreen17> {
                           }
                           index2[0] = pageIndex+1;
                           index2[1] = last;
-
                         });
 
                       });
@@ -243,76 +285,76 @@ class _Mainscreen17State extends State<Mainscreen17> {
     );
   }
 
-  Widget _buildDataGrid(BoxConstraints constraint) {
-    return SfDataGrid(
-        headerRowHeight: 25,
-        source: _employeeDataSource,
-        columnWidthMode: ColumnWidthMode.fill,
-        //rowsPerPage: _rowsPerPage,      //이걸해버리면 source에서 handlePageChange을 정의할필요가없어짐 이걸 왜 맨뒤에 둬서.... 개뻘짓됨....
-        columns: <GridColumn>[
-          GridColumn(
-              columnName: 'id_incolumn',
-              label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Id',
-                    overflow: TextOverflow.ellipsis,
-                  ))),
-          GridColumn(
-              columnName: 'name_incolumn',
-              label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Name',
-                    overflow: TextOverflow.ellipsis,
-                  ))),
-          GridColumn(
-              columnName: 'designation_incloumn',
-              label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Designation',
-                    overflow: TextOverflow.ellipsis,
-                  ))),
-          GridColumn(
-              columnName: 'salary_incolumn',
-              label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Salary',
-                    overflow: TextOverflow.ellipsis,
-                  )))
-        ]);
-  }
-
-  Widget _buildStack(BoxConstraints constraints) {
-    List<Widget> _getChildren() {
-      //새로운함수를 정의
-      final List<Widget> stackChildren = [];
-      stackChildren.add(_buildDataGrid(constraints)); //제일아래 원래 datagrid가 깔림
-
-      if (showLoadingIndicator) {
-        stackChildren.add(Container(
-            //다음에 indicator를 포함한 container가 위치
-            color: Colors.black12,
-            //black12로하면 화면이 약간 어두워지지만 뒤에꺼가보임 white로 하면 완전히 하얀색으로 뒤에가 안보임
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
-            child: Align(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3, //회전하는 동그라미의 굵기
-                ))));
-      }
-      return stackChildren;
-    }
-
-    return Stack(
-      children: _getChildren(),
-    );
-  }
+//   Widget _buildDataGrid(BoxConstraints constraint) {
+//     return SfDataGrid(
+//         headerRowHeight: 25,
+//         source: _employeeDataSource,
+//         columnWidthMode: ColumnWidthMode.fill,
+//         rowsPerPage: _rowsPerPage,      //이걸해버리면 source에서 handlePageChange을 정의할필요가없어짐 이걸 왜 맨뒤에 둬서.... 개뻘짓됨....
+//         columns: <GridColumn>[
+//           GridColumn(
+//               columnName: 'id_incolumn',
+//               label: Container(
+//                   padding: EdgeInsets.symmetric(horizontal: 16.0),
+//                   alignment: Alignment.centerRight,
+//                   child: Text(
+//                     'Id',
+//                     overflow: TextOverflow.ellipsis,
+//                   ))),
+//           GridColumn(
+//               columnName: 'name_incolumn',
+//               label: Container(
+//                   padding: EdgeInsets.symmetric(horizontal: 16.0),
+//                   alignment: Alignment.centerLeft,
+//                   child: Text(
+//                     'Name',
+//                     overflow: TextOverflow.ellipsis,
+//                   ))),
+//           GridColumn(
+//               columnName: 'designation_incloumn',
+//               label: Container(
+//                   padding: EdgeInsets.symmetric(horizontal: 16.0),
+//                   alignment: Alignment.centerRight,
+//                   child: Text(
+//                     'Designation',
+//                     overflow: TextOverflow.ellipsis,
+//                   ))),
+//           GridColumn(
+//               columnName: 'salary_incolumn',
+//               label: Container(
+//                   padding: EdgeInsets.symmetric(horizontal: 16.0),
+//                   alignment: Alignment.center,
+//                   child: Text(
+//                     'Salary',
+//                     overflow: TextOverflow.ellipsis,
+//                   )))
+//         ]);
+//   }
+//
+//   Widget _buildStack(BoxConstraints constraints) {
+//     List<Widget> _getChildren() {
+//       //새로운함수를 정의
+//       final List<Widget> stackChildren = [];
+//       stackChildren.add(_buildDataGrid(constraints)); //제일아래 원래 datagrid가 깔림
+//
+//       if (showLoadingIndicator) {
+//         stackChildren.add(Container(
+//             //다음에 indicator를 포함한 container가 위치
+//             color: Colors.black12,
+//             //black12로하면 화면이 약간 어두워지지만 뒤에꺼가보임 white로 하면 완전히 하얀색으로 뒤에가 안보임
+//             width: constraints.maxWidth,
+//             height: constraints.maxHeight,
+//             child: Align(
+//                 alignment: Alignment.center,
+//                 child: CircularProgressIndicator(
+//                   strokeWidth: 3, //회전하는 동그라미의 굵기
+//                 ))));
+//       }
+//       return stackChildren;
+//     }
+//
+//     return Stack(
+//       children: _getChildren(),
+//     );
+//   }
 }

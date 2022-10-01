@@ -71,6 +71,7 @@ class _Mainscreen17State extends State<Mainscreen17> {
                   onChanged: (item) => setState(() {
                     _employeeDataSource.rowsPerPage = item!;
                     _employeeDataSource.updateDataGriDataSource();
+                    _rowsPerPage=item;
                   }),
                 ),
               ),

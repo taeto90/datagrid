@@ -1,5 +1,6 @@
 import 'package:datagrid/main.dart';
 import 'package:datagrid/view/screen18.dart';
+import 'package:datagrid/view/screen2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -277,7 +278,7 @@ class _Mainscreen17State extends State<Mainscreen17> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(Mainscreen18());
+          Get.to(Mainscreen2());
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.redAccent,

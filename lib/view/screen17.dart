@@ -18,7 +18,7 @@ class Mainscreen17 extends StatefulWidget {
 
 class _Mainscreen17State extends State<Mainscreen17> {
   int _rowsPerPage = 7; //한페이지에 나오는 데이터의수
-  final double _dataPagerHeight = 80.0; //아래 페이지표시하는곳의 높이 클수록 위로 올라감
+  final double _dataPagerHeight = 60.0; //아래 페이지표시하는곳의 높이 클수록 위로 올라감
   bool showLoadingIndicator = false;
 
   late OrderInfoDataSource _employeeDataSource;
@@ -34,6 +34,12 @@ class _Mainscreen17State extends State<Mainscreen17> {
     _employeeDataSource = OrderInfoDataSource(
         employeesInClass: _employees, rowsPerPage: _rowsPerPage);
   }
+  List<int> index=[1,2,3];
+  List<Color> color_array=[Colors.transparent,Colors.transparent,Colors.transparent];
+  List<int> index2=[1,1];
+
+
+  List<int> items=[5,7,10,12,15];
 
   @override
   Widget build(BuildContext context) {
@@ -43,75 +49,107 @@ class _Mainscreen17State extends State<Mainscreen17> {
       ),
       body: LayoutBuilder(builder: (context, constraint) {
         return Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                width: 100,
+                height: 50,
+                child: DropdownButtonFormField<int>(
+                  decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(width: 3,color: Colors.blue)
+                      )
+                  ),
+                  value: _rowsPerPage,
+                  items: items.map((item) => DropdownMenuItem<int>(
+                      value: item,
+                      child: Text('$item',style: TextStyle(fontSize: 13),)
+                  ),).toList(),
+                  onChanged: (item) => setState((){
+                    _rowsPerPage=item!;
+                    //_employeeDataSource.updateDataGriDataSource();
+                  }),
+                ),
+              ),
+            ],
+          ),
           SizedBox(
-              height: constraint.maxHeight - _dataPagerHeight - 100,
+              height: constraint.maxHeight - _dataPagerHeight - 150,
               width: constraint.maxWidth,
               child: _buildStack(constraint) //데이터가 위치할공간
               ),
+
+
           Container(
             height: 80,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    _controller.firstPage();
-                  },
-                  child: Text('처음'),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
+                  onPressed: () {_controller.firstPage();},
+                  child: Text('처음'),),
+                SizedBox(width: 20,),
                 ElevatedButton(
-                  onPressed: () {
-                    _controller.previousPage();
-                  },
-                  child: Text('이전'),
+                  onPressed: () {_controller.previousPage();},
+                  child: Text('이전'),),
+                SizedBox(width: 20,),
+                Container(
+                  height: 20,
+                  width: 20,
+                  child: Center(child: Text('${index[0]}')),
+                    decoration: BoxDecoration(color: color_array[0],borderRadius: BorderRadius.circular(30)),
                 ),
-                SizedBox(
-                  width: 10,
+                SizedBox(width: 20,),
+                Container(
+                  height: 20,
+                  width: 20,
+                  child: Center(child: Text('${index[1]}')),
+                  decoration: BoxDecoration(color: color_array[1],borderRadius: BorderRadius.circular(30)),
                 ),
+                SizedBox(width: 20,),
+                Container(
+                  height: 20,
+                  width: 20,
+                  child: Center(child: Text('${index[2]}')),
+                  decoration: BoxDecoration(color: color_array[2],borderRadius: BorderRadius.circular(30)),
+                ),
+                SizedBox(width: 20,),
                 ElevatedButton(
-                  onPressed: () {
-                    _controller.nextPage();
-                  },
-                  child: Text('다음'),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
+                  onPressed: () {_controller.nextPage();},
+                  child: Text('다음'),),
+                SizedBox(width: 20,),
                 ElevatedButton(
-                  onPressed: () {
-                    _controller.lastPage();
-                  },
+                  onPressed: () {_controller.lastPage();},
                   child: Text('마지막'),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 80,),
+                Text('${index2[0]} of ${index2[1]} pages', style: TextStyle(fontSize: 16),)
               ],
             ),
           ),
+
+
           Container(
               //아래 페이지표시하는곳이 위치할공간
               height: _dataPagerHeight,
+              width: 600,
               //color: Colors.redAccent,
               child: SfDataPagerTheme(
                 data: SfDataPagerThemeData(
-                  // itemBorderWidth: 5,
-                  // //화살표,숫자경계 두께
-                  // itemBorderColor: Colors.grey.shade400,
-                  // //화살표,숫자 경계색
-                  // itemColor: Colors.white,
-                  // selectedItemColor: Colors.lightGreen,
-                  // itemBorderRadius: BorderRadius.circular(5),
-                  // backgroundColor: Colors.teal,
+                  itemBorderWidth: 5,
+                  //화살표,숫자경계 두께
+                  itemBorderColor: Colors.grey.shade400,
+                  //화살표,숫자 경계색
+                  itemColor: Colors.white,
+                  selectedItemColor: Colors.lightGreen,
+                  itemBorderRadius: BorderRadius.circular(5),
+                  backgroundColor: Colors.teal,
                 ),
                 child: SfDataPager(
                     delegate: _employeeDataSource,
-                    pageCount: (_employees.length % _rowsPerPage) == 0
-                        ? _employees.length / _rowsPerPage
-                        : _employees.length / _rowsPerPage + 1,
+                    pageCount: (_employees.length / _rowsPerPage).ceil().toDouble(),
                     //아무것도없는페이지로 가버리면 에러뜸
 
                     visibleItemsCount: 3,
@@ -123,23 +161,33 @@ class _Mainscreen17State extends State<Mainscreen17> {
                     // itemWidth: 40,
                     // itemHeight: 60,
                     //숫자 default : 각각 50
-                    navigationItemWidth: 100,
-                    navigationItemHeight: 70,
+                     navigationItemWidth: 100,
+                    // navigationItemHeight: 70,
                     //화살표 default : 각각 50
-                    firstPageItemVisible: false,
+                    firstPageItemVisible: true,
                     //처음으로가는버튼 비활성화
-                    lastPageItemVisible: false,
+                    lastPageItemVisible: true,
                     //마지막으로가는버튼 비활성화
 
                     pageItemBuilder: (String itemName) {
+                      if (itemName == 'First') {
+                        return Center(
+                          child: Text('처음껄로'),
+                        );
+                      }
                       if (itemName == 'Next') {
                         return Center(
-                          child: Text('Next'),
+                          child: Text('다음껄로'),
                         );
                       }
                       if (itemName == 'Previous') {
                         return Center(
-                          child: Text('Previous'),
+                          child: Text('이전껄로'),
+                        );
+                      }
+                      if (itemName == 'Last') {
+                        return Center(
+                          child: Text('마지막껄로'),
                         );
                       }
                     },
@@ -156,13 +204,29 @@ class _Mainscreen17State extends State<Mainscreen17> {
                     onPageNavigationStart: (int pageIndex) {
                       setState(() {
                         showLoadingIndicator = true;
-                        print('--------------------------------start');
+                        print('$pageIndex');
                       });
                     },
                     onPageNavigationEnd: (int pageIndex) {
                       setState(() {
                         showLoadingIndicator = false;
-                        print('--------------------------------end');
+                        setState(() {
+                          int last = (_employees.length / _rowsPerPage).ceil();
+                          if(pageIndex==0){
+                            index=[1,2,3];
+                            color_array=[Color(0xFFEF9A9A),Colors.transparent,Colors.transparent];
+                          }else if(pageIndex == last-1){
+                            index=[last-2,last-1,last];
+                            color_array=[Colors.transparent,Colors.transparent,Color(0xFFEF9A9A)];
+                          }else{
+                            index=[pageIndex,pageIndex+1,pageIndex+2];
+                            color_array=[Colors.transparent,Color(0xFFEF9A9A),Colors.transparent];
+                          }
+                          index2[0] = pageIndex+1;
+                          index2[1] = last;
+
+                        });
+
                       });
                     }),
               )),
@@ -181,9 +245,10 @@ class _Mainscreen17State extends State<Mainscreen17> {
 
   Widget _buildDataGrid(BoxConstraints constraint) {
     return SfDataGrid(
+        headerRowHeight: 25,
         source: _employeeDataSource,
         columnWidthMode: ColumnWidthMode.fill,
-        rowsPerPage: _rowsPerPage,      //이걸해버리면 source에서 handlePageChange을 정의할필요가없어짐 이걸 왜 맨뒤에 둬서.... 개뻘짓됨....
+        //rowsPerPage: _rowsPerPage,      //이걸해버리면 source에서 handlePageChange을 정의할필요가없어짐 이걸 왜 맨뒤에 둬서.... 개뻘짓됨....
         columns: <GridColumn>[
           GridColumn(
               columnName: 'id_incolumn',
